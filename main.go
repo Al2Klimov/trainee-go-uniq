@@ -11,6 +11,7 @@ import (
 
 func main() {
 	uniqueParameter := flag.Bool("u", false, "allows you to print only unique lines.")
+	repeatParameter := flag.Bool("d", false, "only print duplicate lines, one for each group.")
 	flag.Parse()
 
 	buf := bufio.NewReader(os.Stdin)
@@ -28,7 +29,33 @@ func main() {
 			content = append(content, '\n')
 		}
 
-		if *uniqueParameter {
+		if *repeatParameter {
+			if bytes.Compare(checkEquality, []byte("")) == 0 {
+				checkEquality = content
+				if readErr == io.EOF {
+					break
+				}
+				continue
+			} else if bytes.Compare(content,checkEquality) != 0 {
+				if skip {
+					skip = false
+					_, _ = os.Stdout.Write(checkEquality)
+				}
+				checkEquality = content
+				if readErr == io.EOF {
+					break
+				}
+				continue
+			} else if bytes.Compare(content, checkEquality) == 0 {
+				skip = true
+				checkEquality = content
+				if readErr == io.EOF {
+					_, _ = os.Stdout.Write(checkEquality)
+					break
+				}
+				continue
+			}
+		} else if *uniqueParameter {
 			if bytes.Compare(checkEquality, []byte("")) == 0 {
 				skip = true
 				checkEquality = content
