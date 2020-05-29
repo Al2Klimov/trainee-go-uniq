@@ -12,6 +12,7 @@ import (
 func main() {
 	uniqueParameter := flag.Bool("u", false, "allows you to print only unique lines.")
 	repeatParameter := flag.Bool("d", false, "only print duplicate lines, one for each group.")
+	caseParameter := flag.Bool("i", false, "ignore differences in case when comparing.")
 	flag.Parse()
 
 	buf := bufio.NewReader(os.Stdin)
@@ -27,6 +28,10 @@ func main() {
 
 		if len(content) != 0 && !bytes.HasSuffix(content, []byte{'\n'}) {
 			content = append(content, '\n')
+		}
+
+		if *caseParameter {
+			content = bytes.ToUpper(content)
 		}
 
 		if *repeatParameter {
