@@ -1,3 +1,5 @@
+// uniq | (c) 2020 NETWAYS GmbH | GPLv2+
+
 package main
 
 import (
